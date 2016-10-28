@@ -6,8 +6,8 @@ using namespace std;
 
 const int RESERVEDNUM = 9;
 const int NUMNUM = 10;
-const int SIMPLESINGNUM = 11;
-const int COMPLEXSIGNNUM = 16;
+const int SIMPLESINGNUM = 8;
+const int COMPLEXSIGNNUM = 19;
 
 extern bool getQuote;
 extern bool getSingleComment; // get //
@@ -31,9 +31,11 @@ struct Token {
     string element;
     TokenType type;
 };
-
+#define NOT_MEET {"not_meet",NOTMEET}
 bool checkEqualStr(string str1, string str2);
 
 Token getToken(string str);
 void printToken(Token token);
+Token checkSimpleSign(string str);
+Token checkComplexSign(string str);
 #endif //LAB1_RECOGNIZE_H

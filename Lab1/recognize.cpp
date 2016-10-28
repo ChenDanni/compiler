@@ -9,8 +9,6 @@
 
 using namespace std;
 
-#define NOT_MEET {"not_meet",NOTMEET}
-
 
 Token reserved[RESERVEDNUM] = {{"int",INT},{"char",CHAR},
                                {"void",VOID},{"public",PUBLIC},
@@ -19,14 +17,14 @@ Token reserved[RESERVEDNUM] = {{"int",INT},{"char",CHAR},
                                {"return",RETURN}};
 Token simpleSign[SIMPLESINGNUM] = {{"{",LBRACE},{"}",RBRACE},{"(",LBRACKET},
                                    {")",RBRACKET},{"[",LPAREN},{"]",RPAREN},
-                                   {"!=",NE},{";",SEMICOLON},{"||",OR},
-                                   {"&&",AND},{"\'",QUOTE}};
+                                   {";",SEMICOLON},{"\'",QUOTE}};
 Token complexSign[COMPLEXSIGNNUM] = {{"+",ADD},{"++",ADDONE},{"+=",ADDEQ},
                                      {"-",MINUS},{"--",MINUSONE},{"-=",MINUSEQ},
                                      {"*",MUL},{"*=",MULEQ},{"/",DIV},
                                      {"/=",DIVEQ},{"=",EQ},{"==",IFEQ},
                                      {">",GT},{">=",GE},{"<",LT},
-                                     {"<=",LE}};
+                                     {"<=",LE},{"!=",NE},{"||",OR},
+                                     {"&&",AND}};
 
 char num[NUMNUM] = {'0','1','2','3','4','5','6','7','8','9'};
 
@@ -43,8 +41,7 @@ bool checkEqualStr(string str1, string str2){
     return true;
 }
 
-//保留字 符号
-Token checkType(string str){
+Token checkReserved(string str){
     int i = 0;
     bool check = false;
     TokenType type = NOTMEET;
@@ -60,11 +57,71 @@ Token checkType(string str){
             return ret;
         }
     }
+    return NOT_MEET;
+}
+
+Token checkSimpleSign(string str){
+    int i = 0;
+    bool check = false;
+    TokenType type = NOTMEET;
+    check = false;
+    for (i = 0;i < SIMPLESINGNUM;i++){
+        check = checkEqualStr(str,simpleSign[i].element);
+        if (check){
+            type = simpleSign[i].type;
+            Token ret = {
+                    str,
+                    type
+            };
+            return ret;
+        }
+    }
+    return NOT_MEET;
+}
+
+Token checkComplexSign(string str){
+    int i = 0;
+    bool check = false;
+    TokenType type = NOTMEET;
+    check = false;
+    for (i = 0;i < COMPLEXSIGNNUM;i++){
+        check = checkEqualStr(str,complexSign[i].element);
+        if (check){
+            type = complexSign[i].type;
+            Token ret = {
+                    str,
+                    type
+            };
+            return ret;
+        }
+    }
+    return NOT_MEET;
+}
+//保留字 符号
+Token checkType(string str){
+//    cout << "check Type " << str << endl;
+    int i = 0;
+    bool check = false;
+    TokenType type = NOTMEET;
+    //保留字
+    for (i = 0;i < RESERVEDNUM; i++){
+        check = checkEqualStr(str,reserved[i].element);
+        if (check){
+//            cout << "reserved " << str << endl;
+            type = RESERVED;
+            Token ret = {
+                    str,
+                    type
+            };
+            return ret;
+        }
+    }
     //simple sign
     check = false;
     for (i = 0;i < SIMPLESINGNUM;i++){
         check = checkEqualStr(str,simpleSign[i].element);
         if (check){
+//            cout << "simple " << str << endl;
             type = simpleSign[i].type;
             Token ret = {
                     str,
@@ -78,7 +135,8 @@ Token checkType(string str){
     for (i = 0;i < COMPLEXSIGNNUM;i++){
         check = checkEqualStr(str,complexSign[i].element);
         if (check){
-            type = simpleSign[i].type;
+//            cout << "complex " << str << endl;
+            type = complexSign[i].type;
             Token ret = {
                     str,
                     type
@@ -118,6 +176,7 @@ Token checkChangeLine(string str){
 //变量
 Token checkVariable(string str){
     Token ret = NOT_MEET;
+
     if (!getQuote){
         ret = {
                 str,
@@ -176,17 +235,19 @@ Token checkNumber(string str){
 //得到token
 Token getToken(string str){
     Token ret;
+//    cout << "type " << endl;
     ret = checkType(str);
     if (ret.type != NOTMEET) return ret;
+//    cout << "char " << endl;
     ret = checkChar(str);
     if (ret.type != NOTMEET) return ret;
     ret = checkChangeLine(str);
     if (ret.type != NOTMEET) return ret;
+    ret = checkNumber(str);
+    if (ret.type != NOTMEET) return ret;
     ret = checkVariable(str);
     if (ret.type != NOTMEET) return ret;
     ret = checkComment(str);
-    if (ret.type != NOTMEET) return ret;
-    ret = checkNumber(str);
     if (ret.type != NOTMEET) return ret;
     return NOT_MEET;
 }
@@ -264,18 +325,9 @@ void printToken(Token token){
         default:
             type = "NOTMEET"; break;
     }
-    cout << "(" << type << ": " << token.element << ")" << endl;
+    cout << "(" << type << ":" << token.element << ")" << endl;
 }
 
 //int main() {
-////    Token test = checkType("\'");
-////    cout << test.element;
-//    Token ch = checkChar("s");
-//    cout << ch.element << endl;
-//    Token chline = checkChangeLine("\\n");
-//    cout << chline.element << endl;
-//    Token var = checkVariable("sa");
-//    printToken(var);
-//    Token comment = checkComment("dghs");
-//    cout << comment.element << " " << getSingleComment << endl;
+//    printToken(getToken("\'"));
 //}
