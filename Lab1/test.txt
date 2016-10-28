@@ -1,1 +1,14 @@
-	printf(' ');
+void test(){
+    int a = 1;
+    int b = 200;
+    if ((a == 3)||(b == 1))
+		printf(' ');
+	else
+	    a*=10;
+	while(b>=0){
+	    b--;
+	}
+}
+//single line comment
+/*comment line one
+comment line two*/

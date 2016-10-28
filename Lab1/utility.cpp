@@ -4,12 +4,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "utility.h"
 #include "recognize.h"
 using namespace std;
 
 bool getQuote = false;
-bool getSingleComment = false;
 bool getMulComment = false;
 bool getWord = false;
 
@@ -30,26 +30,20 @@ CharType defType(char ch){
 
     if (('0' <= ch)&&(ch <= '9')){
         ret = TYPE_NUM;
-//        cout << "num  " << ch << endl;
     } else if (((getQuote)&&(ch != '\''))||(('a' <= ch)&&(ch <= 'z'))||(('A' <= ch)&&(ch <= 'Z'))||(ch == '_')){
-//        cout << "char  " << ch << endl;
         ret = TYPE_CHAR;
         getWord = true;
     } else if ((ch == ' ')||(ch == '\t')){
-//        cout << "space  " << ch << endl;
         ret = TYPE_SPACE;
     } else if (ch == '\0'){
-//        cout << "end  " << ch << endl;
         ret = TYPE_END;
     } else {
-//        cout << "sign  " << ch << endl;
         ret = TYPE_SIGN;
     }
 
     return ret;
 }
 
-//a001
 bool stepOneJustify(CharType typeBefore,CharType typeCurrent){
     if ((typeBefore == TYPE_START)||(typeBefore == typeCurrent)){
         return true;
@@ -65,12 +59,9 @@ bool stepOneJustify(CharType typeBefore,CharType typeCurrent){
     return false;
 }
 
-//() {} [] ;
 void stepOne(string str){
-    cout << str << endl;
-    str += '\0';
     string element = "";
-
+    int len = str.length();
     CharType typeBefore = TYPE_START;
     CharType typeCurrent = TYPE_START;
 
@@ -82,9 +73,39 @@ void stepOne(string str){
             break;
         }
     }
+    //判断是否为注释
+    //single
+    if ((str[i] == '/')&&(str[i + 1] == '/')){
+        string s = str.substr((i + 2), str.length() - i - 2);
+        printToken({s, COMMENT});
+        return;
+    }
+    //complex
+    if ((str[i] == '/')&&(str[i + 1] == '*')){
+        getMulComment = true;
+        string s = str.substr((i + 2), str.length() - i - 2);
+        printToken({s, COMMENT});
+        return;
+    }
+    if (len >= 2){
+        if ((str[len - 2] == '*')&&(str[len - 1] == '/')){
+            getMulComment = false;
+            string s = str.substr(0, (len - 2));
+            printToken({s, COMMENT});
+            return;
+        }
+    }
+    if (getMulComment){
+        string s = str.substr(i, str.length() - i);
+        printToken({s, COMMENT});
+        return;
+    }
 
+
+
+
+    str += '\0';
     for (i = j;i < str.length();i++){
-//        cout << "str[i] : _____" << str[i] << endl;
         if ((str[i] == '\'')&&(!getQuote)){
             getQuote = !getQuote;
         }
@@ -108,7 +129,6 @@ void stepOne(string str){
             }
             element += str[i];
         }else {
-//            cout << "element " << element << endl;
             printToken(getToken(element));
             if (str[i] == '\'') {
                 getQuote = !getQuote;
@@ -130,7 +150,6 @@ void getByLine(){
     string line = "";
     if(in){
         while(getline(in,line)){
-//            cout << line << endl;
             lineNum++;
             stepOne(line);
         }

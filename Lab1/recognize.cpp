@@ -187,27 +187,27 @@ Token checkVariable(string str){
 }
 
 //注释
-Token checkComment(string str){
-    Token ret = NOT_MEET;
-    //单行注释
-    if ((getSingleComment)&&(!getQuote)){
-        ret = {
-                str,
-                COMMENT
-        };
-        getSingleComment = false;
-        return ret;
-    }
-    //多行注释
-    if ((getMulComment)&&(!getQuote)){
-        ret = {
-                str,
-                COMMENT
-        };
-        return ret;
-    }
-    return ret;
-}
+//Token checkComment(string str){
+//    Token ret = NOT_MEET;
+//    //单行注释
+//    if ((getSingleComment)&&(!getQuote)){
+//        ret = {
+//                str,
+//                COMMENT
+//        };
+//        getSingleComment = false;
+//        return ret;
+//    }
+//    //多行注释
+//    if ((getMulComment)&&(!getQuote)){
+//        ret = {
+//                str,
+//                COMMENT
+//        };
+//        return ret;
+//    }
+//    return ret;
+//}
 
 //数字
 Token checkNumber(string str){
@@ -247,8 +247,8 @@ Token getToken(string str){
     if (ret.type != NOTMEET) return ret;
     ret = checkVariable(str);
     if (ret.type != NOTMEET) return ret;
-    ret = checkComment(str);
-    if (ret.type != NOTMEET) return ret;
+//    ret = checkComment(str);
+//    if (ret.type != NOTMEET) return ret;
     return NOT_MEET;
 }
 
@@ -325,7 +325,7 @@ void printToken(Token token){
         default:
             type = "NOTMEET"; break;
     }
-    cout << "(" << type << ":" << token.element << ")" << endl;
+    cout << lineNum << ":" << "(" << type << ":" << token.element << ")" << endl;
 }
 
 //int main() {

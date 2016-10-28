@@ -10,7 +10,6 @@ const int SIMPLESINGNUM = 8;
 const int COMPLEXSIGNNUM = 19;
 
 extern bool getQuote;
-extern bool getSingleComment; // get //
 extern bool getMulComment; //get /*
 extern bool getWord;
 
