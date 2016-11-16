@@ -7,11 +7,11 @@ import java.util.ArrayList;
  */
 public class Core {
     public ArrayList<Production> cores;
-    public String statementName;
+    public int statementName;
 
     public Core(){
         cores = new ArrayList<>();
-        statementName = "";
+        statementName = -1;
     }
 
     public void setCores(ArrayList<Production> cores){

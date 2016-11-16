@@ -4,10 +4,10 @@
 package Entity;
 
 public class Goto {
-    char path;
-    String gotoState;
+    public char path;
+    public int gotoState;
 
-    public Goto(char path, String gotoStateName){
+    public Goto(char path, int gotoStateName){
         this.path = path;
         this.gotoState = gotoStateName;
     }
